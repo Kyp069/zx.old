@@ -1,0 +1,196 @@
+# -------------------------------------------------------------------------- #
+#
+# Copyright (C) 2017  Intel Corporation. All rights reserved.
+# Your use of Intel Corporation's design tools, logic functions 
+# and other software and tools, and its AMPP partner logic 
+# functions, and any output files from any of the foregoing 
+# (including device programming or simulation files), and any 
+# associated documentation or information are expressly subject 
+# to the terms and conditions of the Intel Program License 
+# Subscription Agreement, the Intel Quartus Prime License Agreement,
+# the Intel FPGA IP License Agreement, or other applicable license
+# agreement, including, without limitation, that your use is for
+# the sole purpose of programming logic devices manufactured by
+# Intel and sold by Intel or its authorized distributors.  Please
+# refer to the applicable agreement for further details.
+#
+# -------------------------------------------------------------------------- #
+#
+# Quartus Prime
+# Version 17.1.0 Build 590 10/25/2017 SJ Lite Edition
+# Date created = 18:39:10  November 12, 2021
+#
+# -------------------------------------------------------------------------- #
+#
+# Notes:
+#
+# 1) The default values for assignments are stored in the file:
+#		zx_assignment_defaults.qdf
+#    If this file doesn't exist, see file:
+#		assignment_defaults.qdf
+#
+# 2) Altera recommends that you do not modify this file. This
+#    file is updated automatically by the Quartus Prime software
+#    and any changes you make may be lost or overwritten.
+#
+# -------------------------------------------------------------------------- #
+
+
+
+# Project-Wide Assignments
+# ========================
+set_global_assignment -name ORIGINAL_QUARTUS_VERSION 17.1.0
+set_global_assignment -name PROJECT_CREATION_TIME_DATE "18:28:57  NOVEMBER 07, 2021"
+set_global_assignment -name LAST_QUARTUS_VERSION "17.1.0 Lite Edition"
+set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
+set_global_assignment -name NUM_PARALLEL_PROCESSORS ALL
+set_global_assignment -name SMART_RECOMPILE ON
+set_global_assignment -name VERILOG_FILE zx.v
+set_global_assignment -name SDC_FILE zx.sdc
+set_global_assignment -name VERILOG_FILE clock.v
+set_global_assignment -name VERILOG_FILE hdmi.v
+set_global_assignment -name VERILOG_FILE encoder.v
+set_global_assignment -name VERILOG_FILE sdram.v
+set_global_assignment -name VERILOG_FILE video.v
+set_global_assignment -name VERILOG_FILE ../src/usd.v
+set_global_assignment -name SYSTEMVERILOG_FILE ../src/saa1099.sv
+set_global_assignment -name VERILOG_FILE ../src/turbosound.v
+set_global_assignment -name VERILOG_FILE ../src/spi.v
+set_global_assignment -name VERILOG_FILE ../src/specdrum.v
+set_global_assignment -name VERILOG_FILE ../src/ps2.v
+set_global_assignment -name VERILOG_FILE ../src/memory.v
+set_global_assignment -name VERILOG_FILE ../src/main.v
+set_global_assignment -name VERILOG_FILE ../src/keyboard.v
+set_global_assignment -name VERILOG_FILE ../src/dsg.v
+set_global_assignment -name VERILOG_FILE ../src/dprs.v
+set_global_assignment -name VERILOG_FILE ../src/cpu.v
+set_global_assignment -name VERILOG_FILE ../src/audio.v
+set_global_assignment -name VERILOG_FILE ../src/JT49/jt49_noise.v
+set_global_assignment -name VERILOG_FILE ../src/JT49/jt49_exp.v
+set_global_assignment -name VERILOG_FILE ../src/JT49/jt49_eg.v
+set_global_assignment -name VERILOG_FILE ../src/JT49/jt49_div.v
+set_global_assignment -name VERILOG_FILE ../src/JT49/jt49_cen.v
+set_global_assignment -name VERILOG_FILE ../src/JT49/jt49_bus.v
+set_global_assignment -name VERILOG_FILE ../src/JT49/jt49.v
+set_global_assignment -name VHDL_FILE ../src/T80/T80pa.vhd
+set_global_assignment -name VHDL_FILE ../src/T80/T80_Reg.vhd
+set_global_assignment -name VHDL_FILE ../src/T80/T80_Pack.vhd
+set_global_assignment -name VHDL_FILE ../src/T80/T80_MCode.vhd
+set_global_assignment -name VHDL_FILE ../src/T80/T80_ALU.vhd
+set_global_assignment -name VHDL_FILE ../src/T80/T80.vhd
+set_global_assignment -name QIP_FILE ips/pll0.qip
+set_global_assignment -name QIP_FILE ips/pll1.qip
+set_global_assignment -name QIP_FILE ips/serializer.qip
+
+# Pin & Location Assignments
+# ==========================
+set_location_assignment PIN_M2 -to clock12
+set_location_assignment PIN_N2 -to tmds[7]
+set_location_assignment PIN_N1 -to tmds[6]
+set_location_assignment PIN_J2 -to tmds[5]
+set_location_assignment PIN_J1 -to tmds[4]
+set_location_assignment PIN_P2 -to tmds[3]
+set_location_assignment PIN_P1 -to tmds[2]
+set_location_assignment PIN_L15 -to tmds[1]
+set_location_assignment PIN_L16 -to tmds[0]
+set_location_assignment PIN_P11 -to tape
+set_location_assignment PIN_T12 -to dsgL
+set_location_assignment PIN_R11 -to dsgR
+set_location_assignment PIN_L2 -to ps2kCk
+set_location_assignment PIN_K2 -to ps2kD
+set_location_assignment PIN_R12 -to usdCs
+set_location_assignment PIN_T13 -to usdCk
+set_location_assignment PIN_T14 -to usdMosi
+set_location_assignment PIN_R13 -to usdMiso
+set_location_assignment PIN_B14 -to dramCk
+set_location_assignment PIN_F8 -to dramCe
+set_location_assignment PIN_A6 -to dramCs
+set_location_assignment PIN_A7 -to dramWe
+set_location_assignment PIN_B7 -to dramRas
+set_location_assignment PIN_C8 -to dramCas
+set_location_assignment PIN_B6 -to dramBA[1]
+set_location_assignment PIN_A4 -to dramBA[0]
+set_location_assignment PIN_E8 -to dramA[11]
+set_location_assignment PIN_A5 -to dramA[10]
+set_location_assignment PIN_D8 -to dramA[9]
+set_location_assignment PIN_D6 -to dramA[8]
+set_location_assignment PIN_E7 -to dramA[7]
+set_location_assignment PIN_E6 -to dramA[6]
+set_location_assignment PIN_D3 -to dramA[5]
+set_location_assignment PIN_C3 -to dramA[4]
+set_location_assignment PIN_B3 -to dramA[3]
+set_location_assignment PIN_B4 -to dramA[2]
+set_location_assignment PIN_B5 -to dramA[1]
+set_location_assignment PIN_A3 -to dramA[0]
+set_location_assignment PIN_D12 -to dramDQM[1]
+set_location_assignment PIN_B13 -to dramDQM[0]
+set_location_assignment PIN_A14 -to dramDQ[15]
+set_location_assignment PIN_C14 -to dramDQ[14]
+set_location_assignment PIN_F9 -to dramDQ[13]
+set_location_assignment PIN_D14 -to dramDQ[12]
+set_location_assignment PIN_E9 -to dramDQ[11]
+set_location_assignment PIN_A15 -to dramDQ[10]
+set_location_assignment PIN_E11 -to dramDQ[9]
+set_location_assignment PIN_D11 -to dramDQ[8]
+set_location_assignment PIN_C9 -to dramDQ[7]
+set_location_assignment PIN_B12 -to dramDQ[6]
+set_location_assignment PIN_D9 -to dramDQ[5]
+set_location_assignment PIN_A12 -to dramDQ[4]
+set_location_assignment PIN_A11 -to dramDQ[3]
+set_location_assignment PIN_B11 -to dramDQ[2]
+set_location_assignment PIN_A10 -to dramDQ[1]
+set_location_assignment PIN_B10 -to dramDQ[0]
+set_location_assignment PIN_N3 -to led[7]
+set_location_assignment PIN_N5 -to led[6]
+set_location_assignment PIN_R4 -to led[5]
+set_location_assignment PIN_T2 -to led[4]
+set_location_assignment PIN_R3 -to led[3]
+set_location_assignment PIN_T3 -to led[2]
+set_location_assignment PIN_T4 -to led[1]
+set_location_assignment PIN_M6 -to led[0]
+set_location_assignment PIN_N6 -to button
+
+# Classic Timing Assignments
+# ==========================
+set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
+set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
+set_global_assignment -name NOMINAL_CORE_SUPPLY_VOLTAGE 1.2V
+set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS ON
+
+# Analysis & Synthesis Assignments
+# ================================
+set_global_assignment -name FAMILY "Cyclone 10 LP"
+set_global_assignment -name TOP_LEVEL_ENTITY zx
+
+# Fitter Assignments
+# ==================
+set_global_assignment -name DEVICE 10CL025YU256C8G
+set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 1
+
+# Parameter Assignments
+# =====================
+set_parameter -name useSAA "<None>"
+
+# Power Estimation Assignments
+# ============================
+set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
+set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+
+# ----------------
+# start ENTITY(zx)
+
+	# start DESIGN_PARTITION(Top)
+	# ---------------------------
+
+		# Incremental Compilation Assignments
+		# ===================================
+		set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+		set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+		set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+
+	# end DESIGN_PARTITION(Top)
+	# -------------------------
+
+# end ENTITY(zx)
+# --------------
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
