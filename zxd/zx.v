@@ -40,23 +40,12 @@ module zx
 	input  wire       fshMiso,
 	output wire       fshMosi,
 
-	output wire       dramCk,
-	output wire       dramCe,
-	output wire       dramCs,
-	output wire       dramWe,
-	output wire       dramRas,
-	output wire       dramCas,
-	output wire[ 1:0] dramDQM,
-	inout  wire[15:0] dramDQ,
-	output wire[ 1:0] dramBA,
-	output wire[12:0] dramA,
-
-//	output wire       sramUb,
-//	output wire       sramLb,
-//	output wire       sramOe,
-//	output wire       sramWe,
-//	inout  wire[15:0] sramDQ,
-//	output wire[20:0] sramA,
+	output wire       sramUb,
+	output wire       sramLb,
+	output wire       sramOe,
+	output wire       sramWe,
+	inout  wire[15:0] sramDQ,
+	output wire[20:0] sramA,
 
 	output wire       led
 );
@@ -184,7 +173,7 @@ joystick Joystick
 
 //-------------------------------------------------------------------------------------------------
 
-wire reset = power & ready & init & F8 & (alt | del | ctrl) & modelp;
+wire reset = power & init & F8 & (alt | del | ctrl) & modelp;
 wire nmi = F5;
 
 wire blank;
@@ -205,7 +194,7 @@ wire       memRf;
 wire       memRd;
 wire       memWr;
 wire[18:0] memA;
-wire[ 7:0] memD = sdrQ[7:0]; // sramDQ[7:0]
+wire[ 7:0] memD = sramDQ[7:0];
 wire[ 7:0] memQ;
 
 main Main
@@ -315,7 +304,7 @@ assign i2sCkG = i2sCkB;
 
 reg[20:0] ic = 0;
 wire init = ic[20];
-always @(posedge clock) if(vmmCe) if(ready) if(!init) ic <= ic+1'd1;
+always @(posedge clock) if(vmmCe) if(!init) ic <= ic+1'd1;
 
 wire[18:0] iniA = ic[19:1];
 
@@ -342,59 +331,12 @@ dprs #(.KB(64), .FN("rom.hex")) Dpr
 
 //-------------------------------------------------------------------------------------------------
 
-//assign sramUb = 1'b1;
-//assign sramLb = 1'b0;
-//assign sramOe = 1'b0;
-//assign sramWe = init ? !(memWr && (memA[18] || memA[17])) : !ic[0];
-//assign sramDQ = sramWe ? 16'bZ : {2{ init ? memQ : iniA[18:17] == 2'b00 ? dprQ1 : 8'h00 }};
-//assign sramA  = { 2'b00, init ? memA : iniA };
-
-//-------------------------------------------------------------------------------------------------
-
-wire ready;
-
-wire sdrRf = init ? !memRf : 1'b1;
-wire sdrRd = init ? !memRd : 1'b1;
-wire sdrWr = init ? !(memWr && (memA[18] || memA[17])) : !ic[0];
-
-wire[23:0] sdrA = { 5'd0, init ? memA : iniA };
-wire[15:0] sdrD = {2{ init ? memQ : iniA[18:17] == 2'b00 ? dprQ1 : 8'h00 }};
-wire[15:0] sdrQ;
-
-sdram SDRam
-(
-	.clock  (clock  ),
-	.ready  (ready  ),
-	.reset  (reset  ),
-	.rfsh   (sdrRf  ),
-	.rd     (sdrRd  ),
-	.wr     (sdrWr  ),
-	.a      (sdrA   ),
-	.d      (sdrD   ),
-	.q      (sdrQ   ),
-	.dramCs (dramCs ),
-	.dramRas(dramRas),
-	.dramCas(dramCas),
-	.dramWe (dramWe ),
-	.dramDQM(dramDQM),
-	.dramDQ (dramDQ ),
-	.dramBA (dramBA ),
-	.dramA  (dramA  )
-);
-
-ODDR2 oddr2
-(
-	.C0      ( clock ), // 1-bit clock input
-	.C1      (~clock ), // 1-bit clock input
-	.CE      (1'b1   ), // 1-bit clock enable input
-	.D0      (1'b1   ), // 1-bit data input (associated with C0)
-	.D1      (1'b0   ), // 1-bit data input (associated with C1)
-	.R       (1'b0   ), // 1-bit reset input
-	.S       (1'b0   ), // 1-bit set input
-	.Q       (dramCk )  // 1-bit DDR output data
-);
-
-assign dramCe = 1'b1;
+assign sramUb = 1'b1;
+assign sramLb = 1'b0;
+assign sramOe = 1'b0;
+assign sramWe = init ? !(memWr && (memA[18] || memA[17])) : !ic[0];
+assign sramDQ = sramWe ? 16'bZ : {2{ init ? memQ : iniA[18:17] == 2'b00 ? dprQ1 : 8'h00 }};
+assign sramA  = { 2'b00, init ? memA : iniA };
 
 //-------------------------------------------------------------------------------------------------
 
