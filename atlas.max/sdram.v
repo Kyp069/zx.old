@@ -9,7 +9,7 @@ module sdram
 	input  wire       rfsh,
 	input  wire       rd,
 	input  wire       wr,
-	input  wire[23:0] a,
+	input  wire[21:0] a,
 	input  wire[15:0] d,
 	output reg [15:0] q,
 
@@ -20,7 +20,7 @@ module sdram
 	output reg [ 1:0] dramDQM,
 	inout  wire[15:0] dramDQ,
 	output reg [ 1:0] dramBA,
-	output reg [12:0] dramA
+	output reg [11:0] dramA
 );
 //-------------------------------------------------------------------------------------------------
 `include "sdram_cmd.v"
@@ -78,7 +78,7 @@ else begin
 		end
 		endcase
 	end
-/*	sIDLE: begin
+	sIDLE: begin
 		counting <= 1'b0;
 
 		if(rdp) state <= sREAD; else
@@ -89,8 +89,8 @@ else begin
 		counting <= 1'b1;
 
 		case(count)
-		0: ACTIVE(a[23:22], a[21:9]);
-		3: READ(2'b00, a[23:22], a[8:0], 1'b1);
+		0: ACTIVE(a[21:20], a[19:8]);
+		3: READ(2'b00, a[21:20], a[7:0], 1'b1);
 		6: q <= dramDQ;
 		7: state <= sIDLE;
 		endcase
@@ -99,8 +99,8 @@ else begin
 		counting <= 1'b1;
 
 		case(count)
-		0: ACTIVE(a[23:22], a[21:9]);
-		3: WRITE(2'b00, a[23:22], a[8:0], 1'b1);
+		0: ACTIVE(a[21:20], a[19:8]);
+		3: WRITE(2'b00, a[21:20], a[7:0], 1'b1);
 		7: state <= sIDLE;
 		endcase
 	end
@@ -110,40 +110,6 @@ else begin
 		case(count)
 		1: REFRESH;
 		7: state <= sIDLE;
-		endcase
-	end*/
-	sIDLE:
-	begin
-		counting <= 1'b0;
-
-		if(rdp)   begin ACTIVE(a[23:22], a[21:9]); state <= sREAD; end else
-		if(wrp)   begin ACTIVE(a[23:22], a[21:9]); state <= sWRITE; end else
-		if(rfshp) begin REFRESH; state <= sREFRESH; end
-	end
-	sREAD:
-	begin
-		counting <= 1'b1;
-
-		case(count)
-		0: READ(2'b00, a[23:22], a[8:0], 1'b1);
-		2: begin q <= dramDQ; state <= sIDLE; end
-		endcase
-	end
-	sWRITE:
-	begin
-		counting <= 1'b1;
-
-		case(count)
-		0: WRITE(2'b00, a[23:22], a[8:0], 1'b1);
-		2: state <= sIDLE;
-		endcase
-	end
-	sREFRESH:
-	begin
-		counting <= 1'b1;
-
-		case(count)
-		2: state <= sIDLE;
 		endcase
 	end
 	endcase
