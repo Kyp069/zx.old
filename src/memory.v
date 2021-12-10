@@ -31,11 +31,31 @@ module memory
 );
 //-------------------------------------------------------------------------------------------------
 
+reg mapOnIORQ;
+reg[5:0] mapOnIORQData;
+
+reg[5:0] port7FFD;
+always @(posedge clock, negedge reset)
+if(!reset) begin
+	port7FFD <= 1'd0;
+	mapOnIORQ <= 1'b0;
+end
+else if(ce) begin
+	if(!iorq && !wr && !a[15] && !a[1] && model && !port7FFD[5]) begin
+		mapOnIORQ <= 1'b1;
+		mapOnIORQData <= d[5:0];
+	end
+	if(mapOnIORQ) begin
+		port7FFD <= mapOnIORQData;
+		mapOnIORQ <= 1'b0;
+	end
+end
+/*
 reg[5:0] port7FFD;
 always @(posedge clock, negedge reset)
 	if(!reset) port7FFD <= 1'd0; else
 	if(ce) if(!iorq && !a[15] && !a[1] && !wr && model && !port7FFD[5]) port7FFD <= d[5:0];
-
+*/
 wire      vmmPage = model & port7FFD[3];
 wire[1:0] romPage = { model, port7FFD[4] };
 wire[2:0] ramPage = a[15:14] == 2'b01 ? 3'd5 : a[15:14] == 2'b10 ? 3'd2 : model ? port7FFD[2:0] : { a[15:14], 1'b0 };
@@ -49,16 +69,14 @@ reg mapRam;
 reg[4:0] mapPage;
 
 always @(posedge clock) // if(ce)
-if(!reset)
-begin
+if(!reset) begin
 	mapForce <= 1'b0;
 	mapAuto <= 1'b0;
 	mapOnM1 <= 1'b0;
 	mapPage <= 1'd0;
 	mapRam <= 1'b0;
 end
-else
-begin
+else begin
 	if(!iorq && !wr && a[7:0] == 8'hE3) begin
 		mapForce <= d[7];
 		mapPage <= d[4:0];

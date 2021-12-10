@@ -34,23 +34,23 @@ module zx
 	input  wire       usdMiso,
 	output wire       usdMosi,
 
-	output wire       dramCk,
-	output wire       dramCe,
-	output wire       dramCs,
-	output wire       dramWe,
-	output wire       dramRas,
-	output wire       dramCas,
-	output wire[ 1:0] dramDQM,
-	inout  wire[15:0] dramDQ,
-	output wire[ 1:0] dramBA,
-	output wire[12:0] dramA,
+//	output wire       dramCk,
+//	output wire       dramCe,
+//	output wire       dramCs,
+//	output wire       dramWe,
+//	output wire       dramRas,
+//	output wire       dramCas,
+//	output wire[ 1:0] dramDQM,
+//	inout  wire[15:0] dramDQ,
+//	output wire[ 1:0] dramBA,
+//	output wire[12:0] dramA,
 
-//	output wire       sramUb,
-//	output wire       sramLb,
-//	output wire       sramOe,
-//	output wire       sramWe,
-//	inout  wire[15:0] sramDQ,
-//	output wire[20:0] sramA,
+	output wire       sramUb,
+	output wire       sramLb,
+	output wire       sramOe,
+	output wire       sramWe,
+	inout  wire[15:0] sramDQ,
+	output wire[20:0] sramA,
 
 	output wire       stm,
 	output wire       led
@@ -183,7 +183,7 @@ wire       memRf;
 wire       memRd;
 wire       memWr;
 wire[18:0] memA;
-wire[ 7:0] memD = sdrQ[7:0]; // sramDQ[7:0]
+wire[ 7:0] memD =  sramDQ[7:0]; // sdrQ[7:0]; // sramDQ[7:0]
 wire[ 7:0] memQ;
 
 main Main
@@ -318,15 +318,17 @@ dprs #(.KB(64), .FN("rom.hex")) Dpr
 
 //-------------------------------------------------------------------------------------------------
 
-//assign sramUb = 1'b1;
-//assign sramLb = 1'b0;
-//assign sramOe = 1'b0;
-//assign sramWe = init ? !(memWr && (memA[18] || memA[17])) : !ic[0];
-//assign sramDQ = sramWe ? 16'bZ : {2{ init ? memQ : iniA[18:17] == 2'b00 ? dprQ1 : 8'h00 }};
-//assign sramA  = { 2'b00, init ? memA : iniA };
+wire ready = 1'b1;
+
+assign sramUb = 1'b1;
+assign sramLb = 1'b0;
+assign sramOe = 1'b0;
+assign sramWe = init ? !(memWr && (memA[18] || memA[17])) : !ic[0];
+assign sramDQ = sramWe ? 16'bZ : {2{ init ? memQ : iniA[18:17] == 2'b00 ? dprQ1 : 8'h00 }};
+assign sramA  = { 2'b00, init ? memA : iniA };
 
 //-------------------------------------------------------------------------------------------------
-
+/*
 wire ready;
 
 wire sdrRf = init ? !memRf : 1'b1;
@@ -360,7 +362,7 @@ sdram SDRam
 
 assign dramCk = clock;
 assign dramCe = 1'b1;
-
+*/
 //-------------------------------------------------------------------------------------------------
 
 reg[17:0] palette[0:15];
