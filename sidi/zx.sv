@@ -34,11 +34,6 @@ module zx
 );
 //-------------------------------------------------------------------------------------------------
 
-localparam MODEL = 1'b1;
-localparam MAPPER = 1'b1;
-
-//-------------------------------------------------------------------------------------------------
-
 wire clock;
 wire sdrck;
 wire power;
@@ -111,7 +106,7 @@ wire usdMosi;
 wire       vmmCe;
 wire[13:0] vmmA1;
 wire[13:0] vmmA2;
-wire[ 7:0] vmmD = dprQ1;
+wire[ 7:0] vmmD = busy ? 8'h00 : dprQ1;
 
 wire       memCe;
 wire       memRf;
@@ -225,8 +220,8 @@ wire sdrRf = busy ? 1'b1 : !memRf;
 wire sdrRd = busy ? 1'b1 : !memRd;
 wire sdrWr = busy ? !ioctlW : !(memWr && (memA[18] || memA[17]));
 
-wire[23:0] sdrA = busy ? ioctlA[23:0] : { 5'd0, memA };
-wire[15:0] sdrD = {2{ busy ? ioctlQ : memQ }};
+wire[23:0] sdrA = { 5'd0, busy ? ioctlA[18:0] : memA };
+wire[15:0] sdrD = {2{ busy ? (ioctlA[18:17] == 2'b00 ? ioctlQ : 8'h00) : memQ }};
 wire[15:0] sdrQ;
 
 sdram SDRam
@@ -255,15 +250,15 @@ assign dramCe = 1'b1;
 
 //-------------------------------------------------------------------------------------------------
 
-wire model = status[2];
-wire mapper = status[3];
+wire model = !status[2];
+wire mapper = !status[3];
 
 localparam CONF_STR = {
 	"ZX;;",
 	"T0,Reset;",
 	"T1,NMI;",
-	"O2,Model,48K,128K;",
-	"O3,DivMMC automapper,off,on;",
+	"O2,Model,128K,48K;",
+	"O3,DivMMC automapper,on,off;",
 	"V,v1.0"
 };
 
@@ -345,32 +340,6 @@ mist_io #(.STRLEN(($size(CONF_STR)>>3))) mistIo
 
 //-------------------------------------------------------------------------------------------------
 
-reg[17:0] palette[0:15];
-initial $readmemb("palette18.bin", palette, 0);
-
-wire[17:0] irgb = blank ? 1'd0 : model ? { r,r,{4{r&i}}, g,g,{4{g&i}}, b,b,{4{b&i}} } : palette[{ i, r, g, b }];
-wire[17:0] oosd;
-
-osd OSD
-(
-	.clk_sys       (clock      ),
-	.ce            (ne7M0      ),
-	.SPI_SCK       (spiCk      ),
-	.SPI_SS3       (spiS3      ),
-	.SPI_DI        (spiDi      ),
-	.rotate        (2'b00      ),
-	.HSync         (hsync      ),
-	.VSync         (vsync      ),
-	.R_in          (irgb[17:12]),
-	.G_in          (irgb[11: 6]),
-	.B_in          (irgb[ 5: 0]),
-	.R_out         (oosd[17:12]),
-	.G_out         (oosd[11: 6]),
-	.B_out         (oosd[ 5: 0])
-);
-
-//-------------------------------------------------------------------------------------------------
-
 sd_card sdCard
 (
 	.clk_sys     (clock         ),
@@ -397,6 +366,32 @@ sd_card sdCard
 	.sd_sck      (usdCk         ),
 	.sd_sdi      (usdMosi       ),
 	.sd_sdo      (usdMiso       )
+);
+
+//-------------------------------------------------------------------------------------------------
+
+reg[17:0] palette[0:15];
+initial $readmemb("palette18.bin", palette, 0);
+
+wire[17:0] irgb = blank ? 1'd0 : model ? { r,r,{4{r&i}}, g,g,{4{g&i}}, b,b,{4{b&i}} } : palette[{ i, r, g, b }];
+wire[17:0] oosd;
+
+osd OSD
+(
+	.clk_sys(clock      ),
+	.ce     (ne7M0      ),
+	.SPI_SCK(spiCk      ),
+	.SPI_SS3(spiS3      ),
+	.SPI_DI (spiDi      ),
+	.rotate (2'b00      ),
+	.HSync  (hsync      ),
+	.VSync  (vsync      ),
+	.R_in   (irgb[17:12]),
+	.G_in   (irgb[11: 6]),
+	.B_in   (irgb[ 5: 0]),
+	.R_out  (oosd[17:12]),
+	.G_out  (oosd[11: 6]),
+	.B_out  (oosd[ 5: 0])
 );
 
 //-------------------------------------------------------------------------------------------------
